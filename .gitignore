@@ -9,7 +9,7 @@
 
 # RStudio files
 .Rproj.user/
-.Rproj
+*.Rproj
 
 # Projects and quizes and such cloned from other repos
 _external
