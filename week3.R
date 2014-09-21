@@ -212,3 +212,36 @@ dim(spraySums)
 ## And now for each spray (A, B, C, D, etc.) we have a total sum of value for A, B, C, D, etc. So for each spray == A, sum is a sum of all Insects for spray A.
 head(spraySums)
 
+##### MERGING DATA #####
+
+fileURL1 <- "https://dl.dropboxusercontent.com/u/7710864/data/reviews-apr29.csv"
+fileURL2 <- "https://dl.dropboxusercontent.com/u/7710864/data/solutions-apr29.csv"
+download.file(fileURL1, "./data/reviews.csv", method = "curl")
+download.file(fileURL2, "./data/solutions.csv", method = "curl")
+reviews = read.csv("./data/reviews.csv")
+solutions = read.csv("./data/solutions.csv")
+
+head(reviews, 2)
+head(solutions, 2)
+
+## merge by defaults merges by columns with the same name, so it's important to set one of: by, by.x (variable in X dataset), by.y (variable in Y dataset). all = T will add new rows with NA for incomplete observations
+mergedData <- merge(reviews, solutions, by.x = "solution_id", by.y = "id", all = TRUE)
+head(mergedData)
+## Show intersecting names
+intersect(names(reviews), names(solutions))
+## Merge with default settings, by common column names
+mergedData2 <- merge(reviews, solutions, all = TRUE)
+head(mergedData2)
+
+## Plyr's join only joins based on the common names in the two data sets
+df1 = data.frame(id = sample(1:10), x = rnorm(10))
+df2 = data.frame(id = sample(1:10), y = rnorm(10))
+df3 = data.frame(id = sample(1:10), z = rnorm(10))
+## join two data sets and arrange result by id
+arrange(join(df1, df2), id)
+
+## To join many data frames with a common id,
+## Put all data frames into single list (list of data frames)
+dfList = list(df1, df2, df3)
+## And run join_all, it joins all given data frames by a common variable (id)
+join_all(dfList)
