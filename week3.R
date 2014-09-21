@@ -99,3 +99,62 @@ fakeData = rnorm(1e5)
 object.size(fakeData)
 ## Show size in other units
 print(object.size(fakeData), units = "Mb")
+
+
+##### CREATING NEW VARIABLES #####
+
+## Creating sequences, they are often used to create indeces
+
+## Create sequence 1 through 10, increasing each value by 2
+s1 <- seq(1, 10, by = 2); s1
+## Create sequence 1 through 10, of 3 elements
+s2 <- seq(1, 10, length = 3); s2
+## Create an index of a vector
+x <- c(1, 3, 8, 25, 100); seq(along = x)
+
+## Subset restaurants that are in one of the neighborhoods ("Roland Park" or "Homeland"), save as new variable nearMe in restData
+restData$nearMe = restData$neighborhood %in% c("Roland Park", "Homeland")
+## restData$nearMe now allows me to subset restData by proximity near me. Essentialy it's a shortcut to longer %in% command above.
+table(restData$nearMe)
+
+## Creating binary variables
+## Store negative zip codes as TRUE value of zipWrong, all others are TRUE value of zipWrong
+restData$zipWrong = ifelse(restData$zipCode < 0, TRUE, FALSE)
+## Create a 2-dim table of stored zipWrongs vs zipCode < 0
+table(restData$zipWrong, restData$zipCode < 0)
+
+## Creating categorical variables, breaking quantitative variable into categorical
+## Create factor variable zipGroups by cutting zipCode vector by quantiles of zipCode
+restData$zipGroups = cut(restData$zipCode, breaks = quantile(restData$zipCode))
+## Show zipGroups as table, it's a cumulitive number of zipCodes factored by zipGroups
+table(restData$zipGroups)
+## Show zipGroups as a distribution of zipCode values over their quantiles
+table(restData$zipGroups, restData$zipCode)
+
+## Cutting using Hmisc packages
+library(Hmisc)
+
+## use cut2 to cut zipCode vector into 4 zipGroups by their quantiles
+restData$zipGroups = cut2(restData$zipCode, g = 4)
+## Note that it'll find out the actual quantiles and break up the vector
+table(restData$zipGroups)
+
+## Creating factor variables
+## Turn zipCode integer variable into factor variable zcf
+restData$zcf <- factor(restData$zipCode)
+restData$zcf[1:10]
+summary(restData$zcf)
+class(restData$zcf)
+
+## Create a dummy vector filled with "yes" and "no"
+yesno <- sample(c("yes", "no"), size = 10, replace = TRUE)
+## Create factor variable and set "yes" as the lowest value thus ordering factors. By default it would treat first alphabetically as the lowest.
+yesnofac <- factor(yesno, levels = c("yes", "no"))
+## re-order levels of factor to start with "yes". In this particular case identical to levels = in factor function.
+relevel(yesnofac, ref = "yes")
+## factors can be changed to numeric values, first starts as 1 and then they increment by 1
+as.numeric(yesnofac)
+
+## Use mutate from plyr and cut2 from Hmisc to create a new data frame that is an old data frame restData with added new variable zipGroups that is a cut2 function o zipCode (of original restData)
+restData2 <- mutate(restData, zipGroups = cut2(zipCode, g = 4))
+table(restData2$zipGroups)
