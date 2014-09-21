@@ -158,3 +158,57 @@ as.numeric(yesnofac)
 ## Use mutate from plyr and cut2 from Hmisc to create a new data frame that is an old data frame restData with added new variable zipGroups that is a cut2 function o zipCode (of original restData)
 restData2 <- mutate(restData, zipGroups = cut2(zipCode, g = 4))
 table(restData2$zipGroups)
+
+##### RESHAPING DATA #####
+library(reshape2)
+
+head(mtcars)
+
+## Melting the data set
+## Add rownames (they are car names) into a separate column as variable carname
+mtcars$carname <- rownames(mtcars)
+## Melt the dataset, carname, gear and cyl are id variable and kept as they are, mpg and hp are measure variables, they are melted. mpg and hp are in variable column now
+carMelt <- melt(mtcars,
+                id = c("carname", "gear", "cyl"),
+                measure.vars = c("mpg", "hp"))
+
+head(carMelt, n = 3)
+tail(carMelt, n = 3)
+
+## Re-casting the data set
+## by default dcast summarises data by length. This will show number of observations of each of melted variables for cylinders
+cylData <- dcast(carMelt, cyl ~ variable)
+cylData
+## Summarise melted variables by their means across number of cylinders
+cylData1 <- dcast(carMelt, cyl ~ variable, mean)
+cylData1
+
+head(InsectSprays)
+## Count the number of insects for each type of spray (apply given function to variables iterated by Index)
+tapply(InsectSprays$count, InsectSprays$spray, sum)
+
+## Split counts by each of the sprays
+spIns = split(InsectSprays$count, InsectSprays$spray)
+str(spIns)
+## Apply a function sum to the list spIns
+sprCount = lapply(spIns, sum)
+str(sprCount)
+## Combine a list into a vector
+unlist(sprCount)
+## sapply combines lapply + unlist and returns a vector
+sapply(spIns, sum)
+
+## Do the same with plyr, combine split + apply + combine
+## InsectSpray is the data frame, .(spray) is a variable that we want to summarise, equivalent to "spray"
+## summarise - function1, we want to summarise the variable.
+## sum - function2, saying exactly how we want to summarise it and that we want to name the variable sum
+ddply(InsectSprays, .(spray), summarise, sum = sum(count))
+## Summarise by mean
+ddply(InsectSprays, "spray", summarise, varColName = mean(count))
+## Substract off the total count from actual count for every variable
+spraySums <- ddply(InsectSprays, .(spray), summarise, sum = ave(count, FUN = sum))
+## It's the same size as the original data set
+dim(spraySums)
+## And now for each spray (A, B, C, D, etc.) we have a total sum of value for A, B, C, D, etc. So for each spray == A, sum is a sum of all Insects for spray A.
+head(spraySums)
+
