@@ -66,3 +66,32 @@ substr("Pavlushka Rebrov", 1, 9)
 paste("Pavlushka", "Rebrov")
 paste0("Pavlushka", "Rebrov") ## without space
 str_trim("Pavlushhka              ")
+
+##### REGULAR EXPRESSIONS #####
+
+## ^LITERALS — matches "LITERALS" at the beginning of the line
+## LITERALS$ — matches "LITERALS" at the end of the line
+## [Bb][Uu][Ss][Hh] — sets of characters, matches "Bush", "bUsh", "BuSh", etc.
+## ^[Ii] am — "I" or "i" followed by "am", at the beginning of the line
+## ^[0-9][a-zA-Z] - lines starting with any number and followed by any letter
+## [^?.]$ - lines ending with anything other then "." or "?". ^ in set means "NOT"
+
+## . as metacharacters means "ANY CHARACTER"
+## 9.11 matches "9" separated by any character from "11" — "9-11", "9:11", "9 11", but not "911"
+## | - OR. fire|flood|hurricate|tornado
+## ^[Gg]ood|[Bb]ad - matches "Good", "good" in the beginning of the line OR "Bad", "bad" anywhere in the line.
+## () — AND
+## ^([Gg]ood|[Bb]ad) — "Good", "good", "Bad" or "bad" at the beginning of the line.
+## ? - optional
+## [Gg]eorge( [Ww]\.)? [Bb]ush - matched "George Bush" with and optional " W." in the middle, dot is escaped.
+## * - repeat any number of times, including none.
+## + - at least one of the item
+## (.*) - any character repeated any number of times.
+## [0-9]+ (.*)[0-9]+ - at least one digit divided by any character, non-number (including none) from another at least one digit. "01", "0 asd asd asd as 1", "144 99"
+## {} - minimum and maxim number of matches
+## [Bb]ush( +[^ ]+ +){1,5} debate - "Bush" and "debate" with at least one space, followed by at least one non-space, followed by at least one space, between 1 and 5 times. 1-5 words between "bush" and "debate".
+## {x, y} - at least x times, at most y times.
+## {x} - exactly x times
+## {x, } - at least x times
+## () and \1, \2 — "saved search"
+##  +([a-zA-Z]+) +\1 + — space followed by one or more characters followed by at least one space followed by match in (). Looking for repetition of the match.
