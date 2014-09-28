@@ -17,14 +17,30 @@ gdpFile <- "./data/GDP.csv"
 download.file(gdpURL, gdpFile, method = "curl")
 
 gdpData <- read.csv(gdpFile, skip = 5, nrows = 190, stringsAsFactors = F, header = F)
+gdpData <- gdpData[, c(1, 2, 4, 5)]
+colnames(gdpData) <- c("CountryCode", "Rank", "Country.Name", "GDP.Value")
 
 ## replace commas with nothing with gsub, convert to numeric and calculate mean
-mean(as.numeric(gsub(",", "", gdpData$V5)))
+mean(as.numeric(gsub(",", "", gdpData$GDP.Value)))
 
 ### ANSWER 2. [1] 377652.4
 
 ### QUESTION 3. In the data set from Question 2 what is a regular expression that would allow you to count the number of countries whose name begins with "United"? Assume that the variable with the country names in it is named countryNames. How many countries begin with United?
 
-length(grep("^United",gdpData$V4))
+length(grep("^United",gdpData$Country.Name))
 
 ### ANSWER 3. [1] 3
+
+### QUESTION 4. Match the data based on the country shortcode. Of the countries for which the end of the fiscal year is available, how many end in June? 
+eduData  <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv"
+eduFile <- "./data/EDU.csv"
+download.file(eduData, eduFile, method = "curl")
+
+eduData <- read.csv(eduFile, stringsAsFactors = F)
+eduData <- eduData[, c("CountryCode", "Special.Notes")]
+
+mergedData <- merge(gdpData, eduData, as.x = "CountryCode", as.y = "CountryCode")
+## Fiscal Year data is stored in Special.Notes. Find how many of 'em have "Fiscal year end June"
+length(grep("[Ff]iscal year end(.*)+June", mergedData$Special.Notes))
+
+### ANSWER 4. [1] 13
