@@ -22,3 +22,9 @@ gdpData <- read.csv(gdpFile, skip = 5, nrows = 190, stringsAsFactors = F, header
 mean(as.numeric(gsub(",", "", gdpData$V5)))
 
 ### ANSWER 2. [1] 377652.4
+
+### QUESTION 3. In the data set from Question 2 what is a regular expression that would allow you to count the number of countries whose name begins with "United"? Assume that the variable with the country names in it is named countryNames. How many countries begin with United?
+
+length(grep("^United",gdpData$V4))
+
+### ANSWER 3. [1] 3
