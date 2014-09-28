@@ -95,3 +95,35 @@ str_trim("Pavlushhka              ")
 ## {x, } - at least x times
 ## () and \1, \2 — "saved search"
 ##  +([a-zA-Z]+) +\1 + — space followed by one or more characters followed by at least one space followed by match in (). Looking for repetition of the match.
+
+##### WORKING WITH DATES #####
+d1 = date()
+d1
+class(d1)
+
+d2 = Sys.Date()
+d2
+class(d2)
+
+format(d2, "%a, %b %d")
+
+x = c("1jan2013", "1jan1960", "2jan1960", "31mar1960", "30jul1960")
+z = as.Date(x, "%d%b%Y")
+z
+z[1] - z[2]
+as.numeric(z[1] - z[2])
+
+weekdays(d2)
+months(d2)
+julian(d2)
+
+library(lubridate)
+ymd("20140812")
+mdy("05/03/1994")
+dmy("5-5-1980")
+ymd_hm("2012-04-02 11:44")
+ymd_hms("2012-04-02 11:44:59", tz = "Asia/Singapore")
+
+x1 = dmy(x)
+wday(x1[1])
+wday(x1[1], label = T)
